@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" />
+  </head>
+  <body>
+    <div class="bg">
+      <div class="grid"></div>
+      <div class="glow glow-a"></div>
+      <div class="glow glow-b"></div>
+      <div class="glow glow-c"></div>
+    </div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-title">Cyber Deception Honeypot</div>
+        <div class="pill controlled">Controlled Environment</div>
+        <div class="chipmeta">
+          <div class="userchip">Operator: Vaishnavi, Prerna</div>
+          <div class="tzchip">IST</div>
+        </div>
+      </div>
+      <nav class="topnav">
+        <a href="{{ url_for('dashboard') }}" class="navlink">Dashboard</a>
+        <a href="{{ url_for('login_page') }}" class="navlink">Login</a>
+      </nav>
+    </header>
+
+    <main class="shell">
+      <aside class="sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-h">Filters</div>
+          <div class="chips" id="severityChips">
+            <button class="chip is-on" data-sev="ALL" type="button">All</button>
+            <button class="chip" data-sev="CRITICAL" type="button">Critical</button>
+            <button class="chip" data-sev="HIGH" type="button">High</button>
+            <button class="chip" data-sev="MEDIUM" type="button">Medium</button>
+            <button class="chip" data-sev="LOW" type="button">Low</button>
+            <button class="chip" data-sev="INFO" type="button">Info</button>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-h">System</div>
+          <div class="kv">
+            <div class="k">Mode</div>
+            <div class="v">Local Demo</div>
+          </div>
+          <div class="kv">
+            <div class="k">Logs</div>
+            <div class="v">JSONL</div>
+          </div>
+          <div class="kv">
+            <div class="k">Status</div>
+            <div class="v"><span class="pill {{ system_status_class }}">{{ system_status_label }}</span></div>
+          </div>
+          <div class="kv">
+            <div class="k">Critical</div>
+            <div class="v">{{ system_critical_count }}</div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="content">
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>

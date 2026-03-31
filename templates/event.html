@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Event{% endblock %}
+{% block content %}
+  <div class="page">
+    {% if not event %}
+      <div class="panel header">
+        <div>
+          <div class="h-kicker">Not Found</div>
+          <h1 class="h-title">Event Missing</h1>
+          <p class="h-sub">That event ID does not exist in the log.</p>
+          <a class="btn btn-primary" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+        </div>
+      </div>
+    {% else %}
+      <div class="panel header">
+        <div class="header-left">
+          <div class="h-kicker">Detail View</div>
+          <h1 class="h-title">{{ event.get("title","Event") }}</h1>
+          <p class="h-sub">ID: <span class="mono">{{ event.get("id","") }}</span></p>
+        </div>
+        <div class="header-right">
+          <div class="stat">
+            <div class="stat-k">Severity</div>
+            <div class="stat-v">
+              <span class="sev sev-{{ (event.get('severity','INFO')|lower) }}">{{ event.get("severity","INFO") }}</span>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-k">Source</div>
+            <div class="stat-v">{{ event.get("source","") }}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-k">IP</div>
+            <div class="stat-v mono">{{ event.get("ip","") }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="panel info">
+          <div class="sidebar-h">Metadata</div>
+          <div class="kv">
+            <div class="k">Timestamp (UTC)</div>
+            <div class="v mono">{{ event.get("ts","") }}</div>
+          </div>
+          <div class="kv">
+            <div class="k">Actor</div>
+            <div class="v">{{ (event.get("actor") or {}).get("username","") }}</div>
+          </div>
+          <div class="kv">
+            <div class="k">Notes</div>
+            <div class="v mono">{{ (event.get("details") or {}).get("note","") }}</div>
+          </div>
+          <div class="kv">
+            <div class="k">Raw</div>
+            <div class="v mono">{{ (event.get("details") or {}).get("raw","") }}</div>
+          </div>
+          <div class="row">
+            <a class="btn btn-primary" href="{{ url_for('dashboard') }}">Back</a>
+          </div>
+        </div>
+
+        <div class="panel preview">
+          <div class="preview-top">
+            <div class="dot red"></div>
+            <div class="dot yellow"></div>
+            <div class="dot green"></div>
+            <div class="preview-title">Captured Snapshot</div>
+          </div>
+          <img class="preview-img" src="{{ url_for('static', filename='img/system.svg') }}" alt="System snapshot" />
+          <div class="preview-foot">
+            <div class="meta">
+              <div class="tag">Event</div>
+              <div class="tag">{{ event.get("severity","INFO") }}</div>
+              <div class="tag">{{ event.get("source","") }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

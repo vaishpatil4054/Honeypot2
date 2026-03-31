@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Intake{% endblock %}
+{% block content %}
+  <div class="page">
+    <div class="panel header">
+      <div>
+        <div class="h-kicker">New Signal</div>
+        <h1 class="h-title">Intake Form</h1>
+        <p class="h-sub">Capture a report, log it, then review it on the dashboard with charts and drill-down.</p>
+      </div>
+    </div>
+
+    <div class="two">
+      <form class="panel form" method="post" action="{{ url_for('intake_submit') }}">
+        <label class="field">
+          <span>System</span>
+          <input name="system" placeholder="web-gateway-01" />
+        </label>
+        <label class="field">
+          <span>Username</span>
+          <input name="username" placeholder="operator" />
+        </label>
+        <label class="field">
+          <span>Action / Title</span>
+          <input name="action" placeholder="Suspicious login detected" required />
+        </label>
+        <label class="field">
+          <span>Severity</span>
+          <select name="severity">
+            <option>LOW</option>
+            <option>MEDIUM</option>
+            <option>HIGH</option>
+            <option>CRITICAL</option>
+            <option>INFO</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Notes</span>
+          <textarea name="note" rows="4" placeholder="Add details, context, observed indicators..."></textarea>
+        </label>
+        <div class="row">
+          <button class="btn btn-primary" type="submit">Log and Open Dashboard</button>
+          <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">Cancel</a>
+        </div>
+      </form>
+
+      <div class="panel info">
+        <div class="sidebar-h">What happens next?</div>
+        <div class="callout">
+          <div class="callout-badge">1</div>
+          <div class="callout-body">
+            Submitting creates a new event in <code>data/logs.jsonl</code>.
+          </div>
+        </div>
+        <div class="callout">
+          <div class="callout-badge">2</div>
+          <div class="callout-body">
+            The dashboard updates charts (severity mix, last 24h activity, top actors).
+          </div>
+        </div>
+        <div class="callout">
+          <div class="callout-badge">3</div>
+          <div class="callout-body">
+            Click any row to open the detail view with a snapshot image and metadata.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

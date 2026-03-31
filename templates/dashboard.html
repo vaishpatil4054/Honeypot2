@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <div class="page">
+    <div class="panel header">
+      <div class="header-left">
+        <div class="h-kicker">Live Console</div>
+        <div class="title-row">
+          <h1 class="h-title">Security Dashboard</h1>
+          <div class="scan" id="scanStatus">
+            Analyzing every 10s
+            <span class="dots" aria-hidden="true"><span></span><span></span><span></span></span>
+          </div>
+        </div>
+        <p class="h-sub"></p>
+      </div>
+      <div class="header-right">
+        <div class="stat">
+          <div class="stat-k">Events</div>
+          <div class="stat-v" id="statTotal">{{ (summary or {}).get("total", 0) }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-k">Critical</div>
+          <div class="stat-v hot" id="statCritical">{{ ((summary or {}).get("by_severity", {}) or {}).get("CRITICAL", 0) }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-k">Last 24h</div>
+          <div class="stat-v" id="stat24h">{{ ((summary or {}).get("last24h", []) | sum(attribute="v")) if (summary or {}).get("last24h") else 0 }}</div>
+        </div>
+      </div>
+    </div>
+
+    {% if flash %}
+      <div class="toast" data-flash="{{ flash }}">
+        <div class="toast-title">Update</div>
+        <div class="toast-msg">
+          {% if flash == "intake_ok" %}Intake logged. Dashboard updated.{% elif flash == "login_ok" %}Login event logged.{% else %}Dashboard refreshed.{% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="cards">
+      <div class="panel card">
+        <div class="card-top">
+          <div class="card-title">Severity Mix</div>
+          <div class="card-sub">Last 1500 events</div>
+        </div>
+        <canvas class="chart" id="chartSeverity" width="520" height="220"></canvas>
+      </div>
+      <div class="panel card">
+        <div class="card-top">
+          <div class="card-title">Activity</div>
+          <div class="card-sub">5-min buckets (last 2h)</div>
+        </div>
+        <canvas class="chart" id="chartActivity" width="520" height="220"></canvas>
+      </div>
+      <div class="panel card">
+        <div class="card-top">
+          <div class="card-title">Top Actors</div>
+          <div class="card-sub">By frequency (last 2h)</div>
+        </div>
+        <canvas class="chart" id="chartActors" width="520" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="panel table-wrap">
+      <div class="table-top">
+        <div class="table-title">Event Stream</div>
+        <div class="table-sub">Click a row for details</div>
+      </div>
+      <div class="table-scroll">
+        {% if not logs %}
+          <div class="mono" style="padding: 8px 2px; color: rgba(196, 210, 255, 0.72);">
+            No events yet. Submit `/login`, open `/intake`, or run `attacker_simulator.py` while the honeypot is running.
+          </div>
+        {% endif %}
+        <table class="table" id="eventsTable">
+          <thead>
+            <tr>
+              <th>Time (UTC)</th>
+              <th>Severity</th>
+              <th>Source</th>
+              <th>Title</th>
+              <th>Actor</th>
+              <th>IP</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in logs %}
+              {% set eid = log.get('id') %}
+              <tr data-sev="{{ log.get('severity','INFO') }}" {% if eid %}data-href="{{ url_for('event_detail', event_id=eid) }}"{% endif %}>
+                <td class="mono">{{ log.get("ts","") }}</td>
+                <td>
+                  <span class="sev sev-{{ (log.get('severity','INFO')|lower) }}">{{ log.get("severity","INFO") }}</span>
+                </td>
+                <td>{{ log.get("source","") }}</td>
+                <td>{{ log.get("title","") }}</td>
+                <td>{{ (log.get("actor") or {}).get("username","") }}</td>
+                <td class="mono">{{ log.get("ip","") }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

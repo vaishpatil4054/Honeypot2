@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+  <div class="page">
+    <div class="hero">
+      <div class="hero-left">
+        <div class="h-kicker">Secure Access</div>
+        <h1 class="h-title">Operator Sign-In</h1>
+        <p class="h-sub">
+          This is a demo login. Submitting logs an event and takes you to the live dashboard.
+        </p>
+        <form class="panel form" method="post" action="{{ url_for('login_submit') }}">
+          <label class="field">
+            <span>Username</span>
+            <input name="username" autocomplete="username" placeholder="analyst" required />
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input name="password" type="password" autocomplete="current-password" placeholder="********" required />
+          </label>
+          <button class="btn btn-primary" type="submit">Enter Console</button>
+        </form>
+      </div>
+      <div class="hero-right">
+        <div class="panel preview">
+          <div class="preview-top">
+            <div class="dot red"></div>
+            <div class="dot yellow"></div>
+            <div class="dot green"></div>
+            <div class="preview-title">Live System Snapshot</div>
+          </div>
+          <img class="preview-img" src="{{ url_for('static', filename='img/system.svg') }}" alt="System preview" />
+          <div class="preview-foot">
+            <div class="meter">
+              <div class="meter-label">Telemetry</div>
+              <div class="meter-bar"><div class="meter-fill"></div></div>
+            </div>
+            <div class="meta">
+              <div class="tag">SOC</div>
+              <div class="tag">Honeypot</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
